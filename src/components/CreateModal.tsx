@@ -5,6 +5,11 @@ import { useRouter } from "next/router";
 
 import { api } from "../utils/api";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
+
 export interface Props {
   open: boolean;
   openSetter: (value: boolean) => void
@@ -33,9 +38,13 @@ const CreateModal = (props: Props) => {
   };
 
   const flowerCreate = api.flowers.create.useMutation()
+  const flowersQuery = api.flowers.getAll.useQuery()
 
   const saveFlower = async() => {
     await flowerCreate.mutate(formValue)
+    NotificationManager.success('Success message', 'Title here');
+    await flowersQuery.refetch()
+    props.openSetter(false)
 }
 
   
@@ -43,6 +52,7 @@ const CreateModal = (props: Props) => {
 
   return (
     <>
+    <NotificationContainer/>
     <input type="checkbox" id="my-modal" className="modal-toggle" checked={props.open} onChange={() => modalValueChanged}/>
     <div className="modal">
       <div className="modal-box">
