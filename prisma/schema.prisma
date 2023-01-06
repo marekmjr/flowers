@@ -23,5 +23,4 @@ model Flower {
     name    String 
     imgUrl  String
     description String
-    currHydration Int
 }

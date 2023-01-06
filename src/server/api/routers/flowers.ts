@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { Flower } from '@prisma/client'
 
 
 export const flowersRouter = createTRPCRouter({
@@ -13,9 +12,8 @@ export const flowersRouter = createTRPCRouter({
     name: z.string(),
     imgUrl: z.string(),
     description: z.string(),
-    currHydration: z.number()
   }))
-  .query(({ input, ctx }) => {
-    ctx.prisma.flower.create({data: input})
+  .mutation(async ({ input, ctx }) => {
+    return ctx.prisma.flower.create({data: input})
   }),
 });

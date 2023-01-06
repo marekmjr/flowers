@@ -20,23 +20,22 @@ const CreateModal = (props: Props) => {
     name: '',
     description: '',
     imgUrl: '',
-    currHydration: 0
   })
 
   const handleChange = (event: { target: { name: any; value: any; }; }) => {
     const { name, value } = event.target;
     setFormValue((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      };
+        return {
+          ...prevState,
+          [name]: value,
+        };
     });
   };
 
+  const flowerCreate = api.flowers.create.useMutation()
 
-
-  const saveFlower = () => {
-    api.flowers.create.useQuery(formValue,{disabled: true})
+  const saveFlower = async() => {
+    await flowerCreate.mutate(formValue)
 }
 
   
@@ -63,10 +62,6 @@ const CreateModal = (props: Props) => {
       </label>
       <input type="text" placeholder="Odkaz" name="imgUrl" value={formValue.imgUrl} onChange={handleChange} className="input input-primary" />
       
-      <label className="label">
-        <span className="label-text-alt">Současná hydratace</span>
-      </label>
-      <input type="range" min="0" max="100" name="currHydration" value={formValue.currHydration} onChange={handleChange} className="range range-success" />
       <div className="modal-action">
         <button className="btn btn-secondary" onClick={() => props.openSetter(false)}>Zavřít</button>
         <button className="btn btn-primary" onClick={() => saveFlower()}>Uložit</button>
