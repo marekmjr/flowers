@@ -17,10 +17,13 @@ model Example {
 }
 
 model Flower {
-    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    id        String   @id @default(cuid())
     name    String 
-    imgUrl  String
     description String
+    coordinateX Float @default(0)
+    coordinateY Float @default(0)
+    howOftenToWaterInHours Int @default(24)
+    dateOfLastWatering DateTime @default(now())
 }

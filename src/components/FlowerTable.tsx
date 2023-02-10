@@ -4,6 +4,8 @@ import { Column } from "primereact/column";
 import { api } from "../utils/api";
 import { Button } from "primereact/button";
 
+import moment from "moment";
+
 export interface Props {
   modalSetter: (value: boolean) => void;
 }
@@ -35,6 +37,19 @@ const Flowers = (props: Props) => {
         >
           <Column field="name" header="Name"></Column>
           <Column field="description" header="Description"></Column>
+          <Column
+            field="howOftenToWaterInHours"
+            header="Watering in hours"
+          ></Column>
+          <Column
+            field="dateOfLastWatering"
+            header="Last watered"
+            body={(rowdata) => (
+              <>
+                <h5>{moment(rowdata.dateOfLastWatering).fromNow()}</h5>
+              </>
+            )}
+          ></Column>
           <Column
             header="action"
             body={(rowdata) => (

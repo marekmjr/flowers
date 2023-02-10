@@ -1,20 +1,22 @@
 import { type NextPage } from "next";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
 import { LineLayer, IconLayer } from "@deck.gl/layers";
+import { api } from "../utils/api";
+import moment from "moment";
 
 const Map: NextPage = () => {
   // Viewport settings
   const INITIAL_VIEW_STATE = {
-    longitude: 0,
-    latitude: 0,
-    zoom: 0,
-    pitch: 0,
-    bearing: 0,
+    longitude: 7,
+    latitude: 18,
+    zoom: 3,
+    pitch: 40,
+    bearing: 30,
   };
 
   // Data to be used by the LineLayer
-  const data = [
+  const linesMap = [
     // Main room
     {
       sourcePosition: [0, 0],
@@ -70,10 +72,20 @@ const Map: NextPage = () => {
     },
   ];
 
-  const createSVGIcon = () => {
+  const createSVGIcon = (d) => {
+    let g = 255;
+    let r = 0;
+    if (
+      moment().isAfter(
+        moment(d.dateOfLastWatering).add(d.howOftenToWaterInHours, "hours")
+      )
+    ) {
+      g = 0;
+      r = 255;
+    }
     return `
       <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="10" fill="rgb(255, 250, 0)" stroke="#fa1" stroke-width="2"/>
+        <circle cx="14" cy="12" r="10" fill="rgb(${r}, ${g}, 0)" stroke="#00" stroke-width="2"/>
       </svg>
     `;
   };
@@ -81,21 +93,51 @@ const Map: NextPage = () => {
   const svgToDataURL = (svg: string) => {
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   };
+  const { data: flowersDataQ } = api.flowers.getAll.useQuery();
 
-  const flowersData = [
-    { position: [14, 1], message: "Jsem hezka kytka vedle Davida" },
-    { position: [14, 10], message: "Jsme kytky vedle merice CO2 :(" },
-  ];
+  useEffect(() => {
+    const mapData = flowersDataQ?.map((x) => ({
+      ...x,
+      position: [x.coordinateX, x.coordinateY],
+    }));
+    setFlowersData(mapData as any);
+  }, [flowersDataQ]);
+  const [flowersData, setFlowersData] = useState([]);
+
+  const [mapControls, setMapControls] = useState(true);
+
+  const updateCoordinates = api.flowers.updateCoordinates.useMutation();
+  const onDragStart = (d: any) => {
+    setMapControls(false);
+  };
+  const onDragEnd = (d: any) => {
+    const flower = flowersData[d.index];
+    updateCoordinates.mutate({
+      id: flower.id,
+      coordinateX: flower.position[0],
+      coordinateY: flower.position[1],
+    });
+    setMapControls(true);
+  };
+  const onDrag = (d: any) => {
+    const newFlowersData = [...flowersData];
+    const flower = newFlowersData[d.index];
+    flower!.position = [...d.coordinate];
+    setFlowersData(newFlowersData);
+  };
 
   const layers = [
-    new LineLayer({ id: "line-layer", data }),
+    new LineLayer({ id: "line-layer", data: linesMap }),
     new IconLayer({
       data: flowersData,
-      getIcon: (d) => ({
-        url: svgToDataURL(createSVGIcon()),
-        width: 1,
-        height: 1,
+      getIcon: (d: any) => ({
+        url: svgToDataURL(createSVGIcon(d)),
+        width: 30,
+        height: 30,
       }),
+      onDragStart: (d: any) => onDragStart(d),
+      onDragEnd: (d: any) => onDragEnd(d),
+      onDrag: (d: any) => onDrag(d),
       pickable: true,
       sizeScale: 30,
     }),
@@ -103,12 +145,14 @@ const Map: NextPage = () => {
 
   return (
     <>
-      <DeckGL
-        initialViewState={INITIAL_VIEW_STATE}
-        controller={true}
-        layers={layers}
-        getTooltip={({ object }) => object && `${object.message}`}
-      />
+      <div className="relative h-[80vh] w-full">
+        <DeckGL
+          initialViewState={INITIAL_VIEW_STATE}
+          controller={mapControls}
+          layers={layers}
+          getTooltip={({ object }) => object && `${object.name}`}
+        />
+      </div>
     </>
   );
 };

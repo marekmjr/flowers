@@ -21,6 +21,11 @@ const Navigation = () => {
       url: "/flowers",
       className: isCurrentRoute("/flowers") ? "active-route" : "",
     },
+    {
+      label: "View",
+      url: "/map",
+      className: isCurrentRoute("/map") ? "active-route" : "",
+    },
   ];
 
   return (

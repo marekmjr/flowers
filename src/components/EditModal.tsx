@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { api } from "../utils/api";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { Toast } from "primereact/toast";
+import moment from "moment";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -36,7 +38,8 @@ const EditModal = (props: Props) => {
   const defaultValues = {
     name: "",
     description: "",
-    imgUrl: "",
+    howOftenToWaterInHours: 0,
+    dateOfLastWatering: moment(),
   };
 
   const {
@@ -51,7 +54,6 @@ const EditModal = (props: Props) => {
   }, [props.open, reset]);
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     show();
     await flowerCreate.mutate(data);
     props.openSetter(false);
@@ -72,7 +74,6 @@ const EditModal = (props: Props) => {
       <Dialog
         header="Vytváření nové květiny"
         visible={props.open}
-        style={{ width: "50vw" }}
         onHide={() => props.openSetter(false)}
         footer={
           <>
@@ -98,9 +99,9 @@ const EditModal = (props: Props) => {
         <form
           id="flowerForm"
           onSubmit={handleSubmit(onSubmit)}
-          className="flex-column mt-5 flex gap-2"
+          className="flex-column mt-5 flex"
         >
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <Controller
               name="name"
               control={control}
@@ -148,22 +149,30 @@ const EditModal = (props: Props) => {
               )}
             />
             <Controller
-              name="imgUrl"
+              name="howOftenToWaterInHours"
+              rules={{
+                min: {
+                  value: 0,
+                  message: "Ani to nezkoušej",
+                },
+              }}
               control={control}
               render={({ field, fieldState }) => (
                 <>
                   <label
                     htmlFor={field.name}
-                    className={classNames({ "p-error": errors.imgUrl })}
+                    className={classNames({
+                      "p-error": errors.howOftenToWaterInHours,
+                    })}
                   ></label>
                   <span className="p-float-label">
-                    <InputText
+                    <InputNumber
                       id={field.name}
                       value={field.value}
                       className={classNames({ "p-invalid": fieldState.error })}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={(e) => field.onChange(e.value)}
                     />
-                    <label htmlFor={field.name}>Odkaz na obrázek</label>
+                    <label htmlFor={field.name}>Zalévání v hodinách</label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>
