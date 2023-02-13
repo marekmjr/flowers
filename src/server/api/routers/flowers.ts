@@ -17,6 +17,27 @@ export const flowersRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.flower.create({data: input})
     }),
+  update: publicProcedure
+    .input(z.object({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+      howOftenToWaterInDays: z.number(),
+      dateOfLastWatering: z.date()
+    }))  
+    .mutation(async ({input,ctx }) => {
+      return ctx.prisma.flower.update({ 
+        where:{
+          id: input.id
+        },
+        data:{
+          name: input.name,
+          description: input.description,
+          howOftenToWaterInDays: input.howOftenToWaterInDays,
+          dateOfLastWatering: input.dateOfLastWatering
+        }
+      })
+    }),
   delete: publicProcedure
     .input(z.object({
       id: z.string()

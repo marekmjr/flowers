@@ -14,7 +14,7 @@ import "react-notifications/lib/notifications.css";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useFormState } from "react-hook-form";
 import { useAtom } from "jotai";
 
 const EditModal = () => {
@@ -22,6 +22,13 @@ const EditModal = () => {
     onSuccess: () => flowersQuery.refetch(),
   });
   const flowersQuery = api.flowers.getAll.useQuery();
+
+  const flowersDataQuery = api.flowers.getAll.useQuery();
+  const flowersUpdate = api.flowers.update.useMutation({
+    onSuccess: () => {
+      flowersDataQuery.refetch();
+    },
+  });
 
   const toast = useRef<Toast>(null);
   const show = () => {
@@ -33,7 +40,7 @@ const EditModal = () => {
 
   const [modalOpen, setModalOpen] = useAtom(modalOpenAtom);
 
-  const [defaultValues] = useAtom(editModalValuesAtom);
+  const [defaultValues, setDefaultValues] = useAtom(editModalValuesAtom);
 
   const {
     control,
@@ -42,13 +49,29 @@ const EditModal = () => {
     reset,
   } = useForm({ defaultValues });
 
+  //Updates on defaultValues change
+  useEffect(() => reset(defaultValues), [defaultValues, reset]);
+
   useEffect(() => {
-    //reset();
+    if (modalOpen == false) {
+      setDefaultValues({
+        id: "",
+        name: "",
+        description: "",
+        howOftenToWaterInDays: 0,
+        dateOfLastWatering: new Date(),
+      });
+      reset();
+    }
   }, [modalOpen, reset]);
 
   const onSubmit = async (data: any) => {
     show();
-    await flowerCreate.mutate(data);
+    if (data.id === "") {
+      await flowerCreate.mutate(data);
+    } else {
+      await flowersUpdate.mutate(data);
+    }
     setModalOpen(false);
     reset();
   };

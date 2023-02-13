@@ -1,7 +1,5 @@
 import { type NextPage } from "next";
 
-import { useState } from "react";
-
 import EditModal from "../components/EditModal";
 import FlowerTable from "../components/FlowerTable";
 

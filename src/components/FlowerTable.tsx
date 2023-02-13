@@ -8,6 +8,7 @@ import { modalOpenAtom, editModalValuesAtom } from "../stores/EditModal";
 
 import moment from "moment";
 import { useAtom } from "jotai";
+import { Flower } from "@prisma/client";
 
 const Flowers = () => {
   const flowersDataQuery = api.flowers.getAll.useQuery();
@@ -35,7 +36,16 @@ const Flowers = () => {
     flowersDeleteQuery.mutate({ id: idToDelete });
   };
 
-  const editFlower = (flower) => {};
+  const editFlower = (flower: Flower) => {
+    setEditModalValuesAtom({
+      id: flower.id,
+      name: flower.name,
+      description: flower.description,
+      howOftenToWaterInDays: flower.howOftenToWaterInDays,
+      dateOfLastWatering: flower.dateOfLastWatering,
+    });
+    setEditModalOpen(true);
+  };
 
   return (
     <>
@@ -52,7 +62,16 @@ const Flowers = () => {
           <Column
             field="name"
             header="Name"
-            onClick={waterFlower(rowdata)}
+            body={(rowdata) => (
+              <>
+                <span
+                  className="bold cursor-pointer"
+                  onClick={() => editFlower(rowdata)}
+                >
+                  {rowdata.name}
+                </span>
+              </>
+            )}
           ></Column>
           <Column field="description" header="Description"></Column>
           <Column
