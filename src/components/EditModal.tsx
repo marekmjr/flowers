@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../utils/api";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Toast } from "primereact/toast";
-import moment from "moment";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Calendar } from "primereact/calendar";
+import { editModalValuesAtom, modalOpenAtom } from "../stores/EditModal";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -13,15 +15,9 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
 import { Controller, useForm } from "react-hook-form";
+import { useAtom } from "jotai";
 
-export interface Props {
-  open: boolean;
-  openSetter: (value: boolean) => void;
-}
-
-const EditModal = (props: Props) => {
-  /* const hello = api.example.hello.useQuery({ text: "from tRPC" });*/
-
+const EditModal = () => {
   const flowerCreate = api.flowers.create.useMutation({
     onSuccess: () => flowersQuery.refetch(),
   });
@@ -35,12 +31,9 @@ const EditModal = (props: Props) => {
     });
   };
 
-  const defaultValues = {
-    name: "",
-    description: "",
-    howOftenToWaterInHours: 0,
-    dateOfLastWatering: moment(),
-  };
+  const [modalOpen, setModalOpen] = useAtom(modalOpenAtom);
+
+  const [defaultValues] = useAtom(editModalValuesAtom);
 
   const {
     control,
@@ -50,13 +43,13 @@ const EditModal = (props: Props) => {
   } = useForm({ defaultValues });
 
   useEffect(() => {
-    reset();
-  }, [props.open, reset]);
+    //reset();
+  }, [modalOpen, reset]);
 
   const onSubmit = async (data: any) => {
     show();
     await flowerCreate.mutate(data);
-    props.openSetter(false);
+    setModalOpen(false);
     reset();
   };
 
@@ -73,15 +66,15 @@ const EditModal = (props: Props) => {
     <>
       <Dialog
         header="Vytváření nové květiny"
-        visible={props.open}
-        onHide={() => props.openSetter(false)}
+        visible={modalOpen}
+        onHide={() => setModalOpen(false)}
         footer={
           <>
             <div>
               <Button
                 label="No"
                 icon="pi pi-times"
-                onClick={() => props.openSetter(false)}
+                onClick={() => setModalOpen(false)}
                 className="p-button-text"
               />
               <Button
@@ -136,9 +129,10 @@ const EditModal = (props: Props) => {
                     className={classNames({ "p-error": errors.description })}
                   ></label>
                   <span className="p-float-label">
-                    <InputText
+                    <InputTextarea
                       id={field.name}
                       value={field.value}
+                      autoResize
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
@@ -149,7 +143,7 @@ const EditModal = (props: Props) => {
               )}
             />
             <Controller
-              name="howOftenToWaterInHours"
+              name="howOftenToWaterInDays"
               rules={{
                 min: {
                   value: 0,
@@ -162,7 +156,7 @@ const EditModal = (props: Props) => {
                   <label
                     htmlFor={field.name}
                     className={classNames({
-                      "p-error": errors.howOftenToWaterInHours,
+                      "p-error": errors.howOftenToWaterInDays,
                     })}
                   ></label>
                   <span className="p-float-label">
@@ -172,7 +166,32 @@ const EditModal = (props: Props) => {
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.value)}
                     />
-                    <label htmlFor={field.name}>Zalévání v hodinách</label>
+                    <label htmlFor={field.name}>Zalévání ve dnech</label>
+                  </span>
+                  {getFormErrorMessage(field.name)}
+                </>
+              )}
+            />
+            <Controller
+              name="dateOfLastWatering"
+              rules={{}}
+              control={control}
+              render={({ field, fieldState }) => (
+                <>
+                  <label
+                    htmlFor={field.name}
+                    className={classNames({
+                      "p-error": errors.howOftenToWaterInDays,
+                    })}
+                  ></label>
+                  <span className="p-float-label">
+                    <Calendar
+                      id={field.name}
+                      value={field.value}
+                      className={classNames({ "p-invalid": fieldState.error })}
+                      onChange={(e) => field.onChange(e.value)}
+                    />
+                    <label htmlFor={field.name}>Naposledy zalito</label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>

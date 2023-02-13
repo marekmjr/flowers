@@ -77,7 +77,7 @@ const Map: NextPage = () => {
     let r = 0;
     if (
       moment().isAfter(
-        moment(d.dateOfLastWatering).add(d.howOftenToWaterInHours, "hours")
+        moment(d.dateOfLastWatering).add(d.howOftenToWaterInDays, "days")
       )
     ) {
       g = 0;
@@ -150,7 +150,23 @@ const Map: NextPage = () => {
           initialViewState={INITIAL_VIEW_STATE}
           controller={mapControls}
           layers={layers}
-          getTooltip={({ object }) => object && `${object.name}`}
+          getTooltip={({ object }) =>
+            object && {
+              html: `
+              <div class="grid grid-cols-2 gap-x-2">
+                <div>Jméno:</div>
+                <div>${object.name} </div>
+                <div>Popis:</div>
+                <div>${object.description} </div>
+              </div>
+              `,
+              style: {
+                fontSize: "1rem",
+                borderRadius: "5%",
+                color: "white",
+              },
+            }
+          }
         />
       </div>
     </>

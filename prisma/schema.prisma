@@ -24,6 +24,6 @@ model Flower {
     description String
     coordinateX Float @default(0)
     coordinateY Float @default(0)
-    howOftenToWaterInHours Int @default(24)
+    howOftenToWaterInDays Int @default(2)
     dateOfLastWatering DateTime @default(now())
 }
