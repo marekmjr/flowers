@@ -121,7 +121,10 @@ const EditModal = () => {
             <Controller
               name="name"
               control={control}
-              rules={{ required: "Jméno je povinné" }}
+              rules={{ required: "Name is required", maxLength:{
+                  value: 16,
+                  message: "Let's calm down with the name",
+              } }}
               render={({ field, fieldState }) => (
                 <>
                   <label
@@ -144,7 +147,10 @@ const EditModal = () => {
             <Controller
               name="description"
               control={control}
-              rules={{ required: "Popis je povinný" }}
+              rules={{ required: "Description is required", maxLength:{
+                value: 256,
+                message: "Let's calm down with the description",
+            } }}
               render={({ field, fieldState }) => (
                 <>
                   <label
@@ -169,9 +175,13 @@ const EditModal = () => {
               name="howOftenToWaterInDays"
               rules={{
                 min: {
-                  value: 0,
-                  message: "Ani to nezkoušej",
+                  value: 1,
+                  message: "Minimal value is zero",
                 },
+                max:{
+                  value: 365,
+                  message: "This isn't a flower"
+                }
               }}
               control={control}
               render={({ field, fieldState }) => (
