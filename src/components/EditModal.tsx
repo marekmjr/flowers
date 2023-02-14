@@ -88,7 +88,7 @@ const EditModal = () => {
   return (
     <>
       <Dialog
-        header="Vytváření nové květiny"
+        header={(defaultValues.id === "")  ? "Creating new flower" : "Editing flower"}
         visible={modalOpen}
         onHide={() => setModalOpen(false)}
         footer={

@@ -10,6 +10,8 @@ import moment from "moment";
 import { useAtom } from "jotai";
 import { Flower } from "@prisma/client";
 
+import { HealthBar } from "./healthbar/HealthBar"
+
 const Flowers = () => {
   const flowersDataQuery = api.flowers.getAll.useQuery();
   const { data: flowersData } = flowersDataQuery;
@@ -18,6 +20,7 @@ const Flowers = () => {
       flowersDataQuery.refetch();
     },
   });
+
 
   const [, setEditModalOpen] = useAtom(modalOpenAtom);
   const [, setEditModalValuesAtom] = useAtom(editModalValuesAtom);
@@ -47,11 +50,17 @@ const Flowers = () => {
     setEditModalOpen(true);
   };
 
+  const getHp = (dateOfLastWatering: Date, howOftenToWaterInDays: number) => {
+    // How often to water = 100%
+    const timeSince = moment().diff(moment(dateOfLastWatering), 'days')
+    return Math.max(howOftenToWaterInDays - timeSince, 0)
+  }
+
   return (
     <>
-      <Card title="Květiny">
+      <Card title="Flowers">
         <div className="mb-2 flex flex-row justify-end">
-          <Button label="Přidat" onClick={() => setEditModalOpen(true)} />
+          <Button label="Add" onClick={() => setEditModalOpen(true)} />
         </div>
         <DataTable
           value={flowersData}
@@ -65,7 +74,7 @@ const Flowers = () => {
             body={(rowdata) => (
               <>
                 <span
-                  className="bold cursor-pointer"
+                  className="bold cursor-pointer underline"
                   onClick={() => editFlower(rowdata)}
                 >
                   {rowdata.name}
@@ -87,19 +96,29 @@ const Flowers = () => {
               </>
             )}
           ></Column>
+          <Column 
+            header="Health"
+            body={(rowdata) => (
+              <>
+                <HealthBar 
+                hp={getHp(rowdata.dateOfLastWatering, rowdata.howOftenToWaterInDays)}
+                maxHp={rowdata.howOftenToWaterInDays}
+                />
+              </>
+            )}></Column>
           <Column
-            header="action"
+            header=""
             className="grid gap-x-4"
             body={(rowdata) => (
               <>
                 <i
-                  title="Smazat"
+                  title="Delete"
                   className="pi pi-trash cursor-pointer"
                   style={{ fontSize: "1.5rem", color: "#be123c" }}
                   onClick={() => deleteFlower(rowdata.id)}
                 ></i>
                 <i
-                  title="Zalít"
+                  title="Water"
                   className="pi pi-cloud-download cursor-pointer"
                   style={{ fontSize: "1.5rem", color: "#2563eb" }}
                   onClick={() => waterFlower(rowdata.id)}

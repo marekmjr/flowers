@@ -5,7 +5,7 @@ import { api } from "../utils/api";
 import "../styles/globals.css";
 
 //theme
-import "primereact/resources/themes/soho-light/theme.css";
+import "primereact/resources/themes/lara-light-teal/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
 //icons
