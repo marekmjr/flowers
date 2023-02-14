@@ -10,12 +10,16 @@ import "primereact/resources/themes/soho-light/theme.css";
 import "primereact/resources/primereact.min.css";
 //icons
 import "primeicons/primeicons.css";
-import Navigation from "../components/Navigation";
+import Navbar from "../components/landing/navbar";
+import Head from "next/head";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
-      <Navigation />
+      <Head>
+        <title>Flow - Teach your engineers to touch grass</title>
+      </Head>
+      <Navbar />
       <Component {...pageProps} />;
     </>
   );

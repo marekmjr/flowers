@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 
-.p-menubar .p-menubar-root-list > .p-menuitem.active-route > .p-menuitem-link .p-menuitem-text{
-  @apply text-blue-700 underline underline-offset-4
+.active-route{
+  @apply text-emerald-700 underline underline-offset-4
 }
