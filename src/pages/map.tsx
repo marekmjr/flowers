@@ -1,6 +1,12 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { type NextPage } from "next";
 import React, { useEffect, useState } from "react";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import DeckGL from "@deck.gl/react";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 import { api } from "../utils/api";
 import moment from "moment";
@@ -165,7 +171,7 @@ const Map: NextPage = () => {
     return Math.round((hp / howOftenToWaterInDays) * 100);
   };
 
-  const createSVGIcon = (d) => {
+  const createSVGIcon = (d: Flower) => {
     const health = getHeath(d.dateOfLastWatering, d.howOftenToWaterInDays);
     const rgbColor = healthColorRgbClass(health);
 
@@ -200,17 +206,23 @@ const Map: NextPage = () => {
     console.log(d);
     const flower = flowersData[d.index];
     updateCoordinates.mutate({
-      id: flower.id,
-      coordinateX: flower.position[0],
-      coordinateY: flower.position[1],
+      id: (flower as unknown as Flower).id,
+      coordinateX:
+        (flower as unknown as Flower & { position: Array<number> })
+          .position[0] || 0,
+      coordinateY:
+        (flower as unknown as Flower & { position: Array<number> })
+          .position[1] || 0,
     });
     setMapControls(true);
   };
   const onDrag = (d: any) => {
     const newFlowersData = [...flowersData];
     const flower = newFlowersData[d.index];
-    if (d.coordinate) {
-      flower.position = [...d.coordinate];
+    if (d.coordinate && flower) {
+      (flower as unknown as Flower & { position: Array<number> }).position = [
+        ...d.coordinate,
+      ];
     }
     setFlowersData(newFlowersData);
   };
@@ -250,7 +262,7 @@ const Map: NextPage = () => {
     new LineLayer({ id: "line-layer", data: linesMap }),
     new IconLayer({
       data: flowersData,
-      getIcon: (d) => ({
+      getIcon: (d: any) => ({
         url: svgToDataURL(createSVGIcon(d)),
         width: 30,
         height: 30,
