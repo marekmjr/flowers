@@ -17,7 +17,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <title>Flow - Teach your engineers to touch grass</title>
+        <title>flow - Teach your engineers to touch grass</title>
       </Head>
       <Navbar />
       <Component {...pageProps} />;

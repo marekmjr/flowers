@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Disclosure } from "@headlessui/react";
 import { useRouter } from "next/router";
+import Image from "next/image"
 
 export default function Navbar() {
   const navigation = [
@@ -16,15 +17,15 @@ export default function Navbar() {
 
   return (
     <div className="w-full">
-      <nav className="container relative flex flex-wrap items-center justify-between p-8 mx-auto lg:justify-between xl:px-0">
+      <nav className="container relative flex flex-wrap items-center justify-between p-16 lg:p-8 mx-auto lg:justify-between">
         {/* Logo  */}
         <Disclosure>
           {({ open }) => (
             <>
               <div className="flex flex-wrap items-center justify-between w-full lg:w-auto">
-                  <a href="/" className="flex items-center space-x-2 text-2xl font-medium text-emerald-500 dark:text-gray-100">
+                  <Link href="/" className="flex items-center space-x-2 text-2xl font-medium text-emerald-500 dark:text-gray-100">
                     <span>
-                      <img
+                      <Image
                         src="/img/logo.png"
                         alt="N"
                         width="32"
@@ -33,7 +34,7 @@ export default function Navbar() {
                       />
                     </span>
                     <span>flow</span>
-                  </a>
+                  </Link>
 
                 <Disclosure.Button
                   aria-label="Toggle Menu"

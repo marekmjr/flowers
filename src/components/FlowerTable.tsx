@@ -9,8 +9,9 @@ import { modalOpenAtom, editModalValuesAtom } from "../stores/EditModal";
 import moment from "moment";
 import { useAtom } from "jotai";
 import { Flower } from "@prisma/client";
+import Image from "next/image";
 
-import { HealthBar } from "./healthbar/HealthBar"
+import { HealthBar } from "./healthbar/HealthBar";
 
 const Flowers = () => {
   const flowersDataQuery = api.flowers.getAll.useQuery();
@@ -20,7 +21,6 @@ const Flowers = () => {
       flowersDataQuery.refetch();
     },
   });
-
 
   const [, setEditModalOpen] = useAtom(modalOpenAtom);
   const [, setEditModalValuesAtom] = useAtom(editModalValuesAtom);
@@ -52,9 +52,9 @@ const Flowers = () => {
 
   const getHp = (dateOfLastWatering: Date, howOftenToWaterInDays: number) => {
     // How often to water = 100%
-    const timeSince = moment().diff(moment(dateOfLastWatering), 'days')
-    return Math.max(howOftenToWaterInDays - timeSince, 0)
-  }
+    const timeSince = moment().diff(moment(dateOfLastWatering), "days");
+    return Math.max(howOftenToWaterInDays - timeSince, 0);
+  };
 
   return (
     <>
@@ -73,12 +73,7 @@ const Flowers = () => {
             header="Name"
             body={(rowdata) => (
               <>
-                <span
-                  className="bold cursor-pointer underline"
-                  onClick={() => editFlower(rowdata)}
-                >
-                  {rowdata.name}
-                </span>
+                <span className="font-semibold">{rowdata.name}</span>
               </>
             )}
           ></Column>
@@ -96,33 +91,70 @@ const Flowers = () => {
               </>
             )}
           ></Column>
-          <Column 
+          <Column
             header="Health"
             body={(rowdata) => (
               <>
-                <HealthBar 
-                hp={getHp(rowdata.dateOfLastWatering, rowdata.howOftenToWaterInDays)}
-                maxHp={rowdata.howOftenToWaterInDays}
+                <HealthBar
+                  hp={getHp(
+                    rowdata.dateOfLastWatering,
+                    rowdata.howOftenToWaterInDays
+                  )}
+                  maxHp={rowdata.howOftenToWaterInDays}
                 />
               </>
-            )}></Column>
+            )}
+          ></Column>
           <Column
             header=""
             className="grid gap-x-4"
             body={(rowdata) => (
               <>
-                <i
-                  title="Delete"
-                  className="pi pi-trash cursor-pointer"
-                  style={{ fontSize: "1.5rem", color: "#be123c" }}
-                  onClick={() => deleteFlower(rowdata.id)}
-                ></i>
-                <i
-                  title="Water"
-                  className="pi pi-cloud-download cursor-pointer"
-                  style={{ fontSize: "1.5rem", color: "#2563eb" }}
+                <video
+                  src="/img/icons/text-box.mp4"
+                  width="40"
+                  height="40"
+                  loop
+                  className="cursor-pointer"
+                  onClick={() => editFlower(rowdata)}
+                  onMouseOver={(event) =>
+                    (event.target as HTMLVideoElement).play()
+                  }
+                  onMouseOut={(event) => {
+                    (event.target as HTMLVideoElement).currentTime = 0;
+                    (event.target as HTMLVideoElement).pause();
+                  }}
+                ></video>
+                <video
+                  src="/img/icons/water.mp4"
+                  width="40"
+                  height="40"
+                  loop
+                  className="cursor-pointer"
                   onClick={() => waterFlower(rowdata.id)}
-                ></i>
+                  onMouseOver={(event) =>
+                    (event.target as HTMLVideoElement).play()
+                  }
+                  onMouseOut={(event) => {
+                    (event.target as HTMLVideoElement).currentTime = 0;
+                    (event.target as HTMLVideoElement).pause();
+                  }}
+                ></video>
+                <video
+                  src="/img/icons/trash.mp4"
+                  width="40"
+                  height="40"
+                  loop
+                  className="cursor-pointer"
+                  onClick={() => deleteFlower(rowdata.id)}
+                  onMouseOver={(event) =>
+                    (event.target as HTMLVideoElement).play()
+                  }
+                  onMouseOut={(event) => {
+                    (event.target as HTMLVideoElement).currentTime = 0;
+                    (event.target as HTMLVideoElement).pause();
+                  }}
+                ></video>
               </>
             )}
           ></Column>

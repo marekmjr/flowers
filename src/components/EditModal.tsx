@@ -58,7 +58,7 @@ const EditModal = () => {
         id: "",
         name: "",
         description: "",
-        howOftenToWaterInDays: 0,
+        howOftenToWaterInDays: 1,
         dateOfLastWatering: new Date(),
       });
       reset();
@@ -88,7 +88,9 @@ const EditModal = () => {
   return (
     <>
       <Dialog
-        header={(defaultValues.id === "")  ? "Creating new flower" : "Editing flower"}
+        header={
+          defaultValues.id === "" ? "Creating new flower" : "Editing flower"
+        }
         visible={modalOpen}
         onHide={() => setModalOpen(false)}
         footer={
@@ -121,10 +123,13 @@ const EditModal = () => {
             <Controller
               name="name"
               control={control}
-              rules={{ required: "Name is required", maxLength:{
+              rules={{
+                required: "Name is required",
+                maxLength: {
                   value: 16,
                   message: "Let's calm down with the name",
-              } }}
+                },
+              }}
               render={({ field, fieldState }) => (
                 <>
                   <label
@@ -147,10 +152,13 @@ const EditModal = () => {
             <Controller
               name="description"
               control={control}
-              rules={{ required: "Description is required", maxLength:{
-                value: 256,
-                message: "Let's calm down with the description",
-            } }}
+              rules={{
+                required: "Description is required",
+                maxLength: {
+                  value: 256,
+                  message: "Let's calm down with the description",
+                },
+              }}
               render={({ field, fieldState }) => (
                 <>
                   <label
@@ -176,12 +184,12 @@ const EditModal = () => {
               rules={{
                 min: {
                   value: 1,
-                  message: "Minimal value is zero",
+                  message: "Minimal value is one",
                 },
-                max:{
+                max: {
                   value: 365,
-                  message: "This isn't a flower"
-                }
+                  message: "This isn't a flower",
+                },
               }}
               control={control}
               render={({ field, fieldState }) => (
