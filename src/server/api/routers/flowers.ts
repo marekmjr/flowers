@@ -5,7 +5,13 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const flowersRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.flower.findMany()
+    return ctx.prisma.flower.findMany(
+      {
+        orderBy:[{
+          name: 'asc'
+        }]
+      }
+    )
   }),
   create: publicProcedure
     .input(z.object({
