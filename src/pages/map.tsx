@@ -209,7 +209,9 @@ const Map: NextPage = () => {
   const onDrag = (d: any) => {
     const newFlowersData = [...flowersData];
     const flower = newFlowersData[d.index];
-    flower.position = [...d.coordinate];
+    if (d.coordinate) {
+      flower.position = [...d.coordinate];
+    }
     setFlowersData(newFlowersData);
   };
 

@@ -143,7 +143,7 @@ const EditModal = () => {
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
-                    <label htmlFor={field.name}>Jméno</label>
+                    <label htmlFor={field.name}>Name</label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>
@@ -170,10 +170,13 @@ const EditModal = () => {
                       id={field.name}
                       value={field.value}
                       autoResize
-                      className={classNames({ "p-invalid": fieldState.error })}
+                      className={classNames(
+                        { "p-invalid": fieldState.error },
+                        "w-full"
+                      )}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
-                    <label htmlFor={field.name}>Popis</label>
+                    <label htmlFor={field.name}>Description</label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>
@@ -207,7 +210,9 @@ const EditModal = () => {
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.value)}
                     />
-                    <label htmlFor={field.name}>Zalévání ve dnech</label>
+                    <label htmlFor={field.name}>
+                      How often to water (in days)
+                    </label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>
@@ -232,7 +237,7 @@ const EditModal = () => {
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.value)}
                     />
-                    <label htmlFor={field.name}>Naposledy zalito</label>
+                    <label htmlFor={field.name}>Last time watered</label>
                   </span>
                   {getFormErrorMessage(field.name)}
                 </>
