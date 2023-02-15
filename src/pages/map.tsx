@@ -1,16 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { type NextPage } from "next";
 import React, { useEffect, useState } from "react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import DeckGL from "@deck.gl/react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 import { api } from "../utils/api";
 import moment from "moment";
-import { Flower } from "@prisma/client";
+import type { Flower } from "@prisma/client";
 
 const Map: NextPage = () => {
   // Viewport settings
