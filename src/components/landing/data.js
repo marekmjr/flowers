@@ -16,8 +16,8 @@ const benefitOne = {
   image: benefitOneImg,
   bullets: [
     {
-      title: "Understand your customers",
-      desc: "Flowers ",
+      title: "Understand your fauna",
+      desc: "flow can help you get in touch with the type of flowers you own",
       icon: <EmojiHappyIcon />,
     },
     {

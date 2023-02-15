@@ -4,14 +4,15 @@ import DeckGL from "@deck.gl/react";
 import { LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 import { api } from "../utils/api";
 import moment from "moment";
+import { Flower } from "@prisma/client";
 
 const Map: NextPage = () => {
   // Viewport settings
   const INITIAL_VIEW_STATE = {
-    longitude: 7,
+    longitude: 10,
     latitude: 18,
     zoom: 3,
-    pitch: 40,
+    pitch: 50,
     bearing: 30,
   };
 
@@ -142,20 +143,35 @@ const Map: NextPage = () => {
     },
   ];
 
-  const createSVGIcon = (d) => {
-    let g = 255;
-    let r = 0;
-    if (
-      moment().isAfter(
-        moment(d.dateOfLastWatering).add(d.howOftenToWaterInDays, "days")
-      )
-    ) {
-      g = 0;
-      r = 255;
+  const healthColorRgbClass = (health: number) => {
+    if (health < 25) {
+      return "#dc2626";
+    } else if (health < 50) {
+      return "#fb923c";
+    } else if (health < 75) {
+      return "#4ade80";
+    } else {
+      return "#059669";
     }
+  };
+
+  const getHeath = (
+    dateOfLastWatering: Date,
+    howOftenToWaterInDays: number
+  ) => {
+    // How often to water = 100%
+    const timeSince = moment().diff(moment(dateOfLastWatering), "days");
+    const hp = Math.max(howOftenToWaterInDays - timeSince, 0 * 100);
+    return Math.round((hp / howOftenToWaterInDays) * 100);
+  };
+
+  const createSVGIcon = (d) => {
+    const health = getHeath(d.dateOfLastWatering, d.howOftenToWaterInDays);
+    const rgbColor = healthColorRgbClass(health);
+
     return `
       <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="12" r="10" fill="rgb(${r}, ${g}, 0)" stroke="#00" stroke-width="2"/>
+        <circle cx="14" cy="12" r="10" fill="${rgbColor}" stroke="#00" stroke-width="2"/>
       </svg>
     `;
   };
@@ -177,10 +193,11 @@ const Map: NextPage = () => {
   const [mapControls, setMapControls] = useState(true);
 
   const updateCoordinates = api.flowers.updateCoordinates.useMutation();
-  const onDragStart = (d: any) => {
+  const onDragStart = () => {
     setMapControls(false);
   };
   const onDragEnd = (d: any) => {
+    console.log(d);
     const flower = flowersData[d.index];
     updateCoordinates.mutate({
       id: flower.id,
@@ -192,7 +209,7 @@ const Map: NextPage = () => {
   const onDrag = (d: any) => {
     const newFlowersData = [...flowersData];
     const flower = newFlowersData[d.index];
-    flower!.position = [...d.coordinate];
+    flower.position = [...d.coordinate];
     setFlowersData(newFlowersData);
   };
 
@@ -231,12 +248,12 @@ const Map: NextPage = () => {
     new LineLayer({ id: "line-layer", data: linesMap }),
     new IconLayer({
       data: flowersData,
-      getIcon: (d: any) => ({
+      getIcon: (d) => ({
         url: svgToDataURL(createSVGIcon(d)),
         width: 30,
         height: 30,
       }),
-      onDragStart: (d: any) => onDragStart(d),
+      onDragStart: () => onDragStart(),
       onDragEnd: (d: any) => onDragEnd(d),
       onDrag: (d: any) => onDrag(d),
       pickable: true,
@@ -246,8 +263,8 @@ const Map: NextPage = () => {
       id: "text-layer",
       data: textData,
       pickable: true,
-      getPosition: (d) => d.coordinates,
-      getText: (d) => d.name,
+      getPosition: (d: any) => d.coordinates,
+      getText: (d: any) => d.name,
       getSize: 18,
       getAngle: 0,
       getTextAnchor: "middle",
@@ -257,19 +274,28 @@ const Map: NextPage = () => {
 
   return (
     <>
-      <div className="relative h-[80vh] w-full">
+      <div
+        className="relative h-[80vh] w-full"
+        onContextMenu={(e) => e.preventDefault()}
+      >
         <DeckGL
           initialViewState={INITIAL_VIEW_STATE}
           controller={mapControls}
           layers={layers}
-          getTooltip={({ object }) =>
-            object && {
+          getTooltip={({ object }: { object: any }) =>
+            object &&
+            object?.dateOfLastWatering != null && {
               html: `
               <div class="grid grid-cols-2 gap-x-2">
-                <div>Jméno:</div>
+                <div>Name:</div>
                 <div>${object.name} </div>
-                <div>Popis:</div>
+                <div>Desciption:</div>
                 <div>${object.description} </div>
+                <div>Health:</div>
+                <div>${getHeath(
+                  object.dateOfLastWatering,
+                  object.howOftenToWaterInDays
+                )}%</div>
               </div>
               `,
               style: {

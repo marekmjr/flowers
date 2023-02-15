@@ -1,7 +1,7 @@
 export const HealthBar = ({ maxHp = 100, hp = 100 } = {}) => {
   const barWidth = (hp / maxHp) * 100;
 
-  const health = (hp / maxHp) * 100;
+  const health = Math.round((hp / maxHp) * 100);
   const healthColorClass = () => {
     if (health < 25) {
       return "bg-red-600";
