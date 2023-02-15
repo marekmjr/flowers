@@ -27,7 +27,7 @@ export const HealthBar = ({ maxHp = 100, hp = 100 } = {}) => {
       <div
         style={{
           position: "absolute",
-          top: "5px",
+          top: "2px",
           left: 0,
           right: 0,
           textAlign: "center",

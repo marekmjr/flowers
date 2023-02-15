@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import DeckGL from "@deck.gl/react";
-import { LineLayer, IconLayer } from "@deck.gl/layers";
+import { LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 import { api } from "../utils/api";
 import moment from "moment";
 
@@ -19,11 +19,11 @@ const Map: NextPage = () => {
   const linesMap = [
     // Main room
     {
-      sourcePosition: [0, 0],
+      sourcePosition: [0, -4],
       targetPosition: [0, 20],
     },
     {
-      sourcePosition: [15, 0],
+      sourcePosition: [15, -4],
       targetPosition: [15, 20],
     },
     {
@@ -31,22 +31,40 @@ const Map: NextPage = () => {
       targetPosition: [15, 20],
     },
     {
-      sourcePosition: [0, 0],
-      targetPosition: [15, 0],
+      sourcePosition: [0, -4],
+      targetPosition: [15, -4],
+    },
+
+    //Hallroom
+    {
+      sourcePosition: [16, 5],
+      targetPosition: [16, 23],
+    },
+    {
+      sourcePosition: [28, 5],
+      targetPosition: [28, 23],
+    },
+    {
+      sourcePosition: [16, 23],
+      targetPosition: [28, 23],
+    },
+    {
+      sourcePosition: [16, 5],
+      targetPosition: [28, 5],
     },
 
     // Zasedacka
     {
       sourcePosition: [0, 32],
-      targetPosition: [0, 22],
+      targetPosition: [0, 21],
     },
     {
       sourcePosition: [15, 32],
-      targetPosition: [15, 22],
+      targetPosition: [15, 21],
     },
     {
-      sourcePosition: [0, 22],
-      targetPosition: [15, 22],
+      sourcePosition: [0, 21],
+      targetPosition: [15, 21],
     },
     {
       sourcePosition: [0, 32],
@@ -55,20 +73,72 @@ const Map: NextPage = () => {
 
     // Flutter room
     {
-      sourcePosition: [17, 32],
-      targetPosition: [17, 24],
+      sourcePosition: [16, 32],
+      targetPosition: [16, 24],
     },
     {
       sourcePosition: [32, 32],
       targetPosition: [32, 24],
     },
     {
-      sourcePosition: [17, 24],
+      sourcePosition: [16, 24],
       targetPosition: [32, 24],
     },
     {
-      sourcePosition: [17, 32],
+      sourcePosition: [16, 32],
       targetPosition: [32, 32],
+    },
+    // Pruchod do zadu
+    {
+      sourcePosition: [16, -4],
+      targetPosition: [16, 0],
+    },
+    {
+      sourcePosition: [23, 0],
+      targetPosition: [23, -4],
+    },
+    {
+      sourcePosition: [16, -4],
+      targetPosition: [23, -4],
+    },
+    {
+      sourcePosition: [16, 0],
+      targetPosition: [23, 0],
+    },
+    //Zadni místnost
+    {
+      sourcePosition: [24, -4],
+      targetPosition: [24, 0],
+    },
+    {
+      sourcePosition: [34, 0],
+      targetPosition: [34, -4],
+    },
+    {
+      sourcePosition: [24, -4],
+      targetPosition: [34, -4],
+    },
+    {
+      sourcePosition: [24, 0],
+      targetPosition: [34, 0],
+    },
+
+    //Kuchyne
+    {
+      sourcePosition: [29, 23],
+      targetPosition: [29, 19],
+    },
+    {
+      sourcePosition: [36, 23],
+      targetPosition: [36, 19],
+    },
+    {
+      sourcePosition: [29, 19],
+      targetPosition: [36, 19],
+    },
+    {
+      sourcePosition: [29, 23],
+      targetPosition: [36, 23],
     },
   ];
 
@@ -126,6 +196,37 @@ const Map: NextPage = () => {
     setFlowersData(newFlowersData);
   };
 
+  const textData = [
+    {
+      coordinates: [4, -3],
+      name: "Main room",
+    },
+    {
+      coordinates: [19, 6],
+      name: "Hallroom",
+    },
+    {
+      coordinates: [5, 22],
+      name: "Conference room",
+    },
+    {
+      coordinates: [19, 25],
+      name: "Flutter",
+    },
+    {
+      coordinates: [19, -3],
+      name: "Closet",
+    },
+    {
+      coordinates: [27, -3],
+      name: "Backroom",
+    },
+    {
+      coordinates: [32, 20],
+      name: "Kitchen",
+    },
+  ];
+
   const layers = [
     new LineLayer({ id: "line-layer", data: linesMap }),
     new IconLayer({
@@ -140,6 +241,17 @@ const Map: NextPage = () => {
       onDrag: (d: any) => onDrag(d),
       pickable: true,
       sizeScale: 30,
+    }),
+    new TextLayer({
+      id: "text-layer",
+      data: textData,
+      pickable: true,
+      getPosition: (d) => d.coordinates,
+      getText: (d) => d.name,
+      getSize: 18,
+      getAngle: 0,
+      getTextAnchor: "middle",
+      getAlignmentBaseline: "center",
     }),
   ];
 
