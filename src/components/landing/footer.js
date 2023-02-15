@@ -7,11 +7,11 @@ export default function Footer() {
   return (
     <div className="relative">
       <Container>
-        <div className="grid max-w-screen-xl grid-cols-1 gap-10 pt-10 mx-auto mt-5 border-t border-gray-100 dark:border-trueGray-700 lg:grid-cols-5">
+        <div className="grid max-w-screen-xl grid-cols-1 gap-10 pt-10 mx-auto mt-5 border-t border-gray-100 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <div>
               {" "}
-                <a href="/" className="flex items-center space-x-2 text-2xl font-medium text-emerald-500 dark:text-gray-100">
+                <a href="/" className="flex items-center space-x-2 text-2xl font-medium text-emerald-500">
                   <span>
                     <img
                       src="/img/logo.png"
