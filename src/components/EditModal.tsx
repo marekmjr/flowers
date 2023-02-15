@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { api } from "../utils/api";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -14,7 +14,7 @@ import "react-notifications/lib/notifications.css";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { classNames } from "primereact/utils";
-import { Controller, useForm, useFormState } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useAtom } from "jotai";
 
 const EditModal = () => {
@@ -63,7 +63,7 @@ const EditModal = () => {
       });
       reset();
     }
-  }, [modalOpen, reset]);
+  }, [modalOpen, reset, setDefaultValues]);
 
   const onSubmit = async (data: any) => {
     show();
