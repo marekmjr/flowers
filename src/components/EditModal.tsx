@@ -88,6 +88,9 @@ const EditModal = () => {
   return (
     <>
       <Dialog
+        position="right"
+        draggable={false}
+        resizable={false}
         header={
           defaultValues.id === "" ? "Creating new flower" : "Editing flower"
         }
@@ -232,6 +235,7 @@ const EditModal = () => {
                   ></label>
                   <span className="p-float-label">
                     <Calendar
+                      maxDate={new Date()}
                       id={field.name}
                       value={field.value}
                       className={classNames({ "p-invalid": fieldState.error })}
