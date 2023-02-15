@@ -34,8 +34,8 @@ const benefitTwo = {
   image: benefitTwoImg,
   bullets: [
     {
-      title: "Mobile Responsive Template",
-      desc: "Flow is designed as a mobile first responsive template.",
+      title: "Mobile Responsive Design",
+      desc: "Flow is designed as a mobile second responsive application.",
       icon: <DeviceMobileIcon />,
     },
     {

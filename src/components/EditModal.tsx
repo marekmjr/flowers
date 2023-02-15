@@ -79,9 +79,11 @@ const EditModal = () => {
   type errorKeys = keyof typeof errors;
   const getFormErrorMessage = (name: string) => {
     return errors[name as errorKeys] ? (
-      <small className="p-error">{errors[name as errorKeys]?.message}</small>
+      <small className="p-error -mt-3">
+        {errors[name as errorKeys]?.message}
+      </small>
     ) : (
-      <small className="p-error">&nbsp;</small>
+      <small className="p-error -mt-3">&nbsp;</small>
     );
   };
 
@@ -122,14 +124,14 @@ const EditModal = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="flex-column mt-5 flex"
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <Controller
               name="name"
               control={control}
               rules={{
                 required: "Name is required",
                 maxLength: {
-                  value: 16,
+                  value: 32,
                   message: "Let's calm down with the name",
                 },
               }}
@@ -142,6 +144,7 @@ const EditModal = () => {
                   <span className="p-float-label">
                     <InputText
                       id={field.name}
+                      maxLength={32}
                       value={field.value}
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.target.value)}
@@ -170,6 +173,7 @@ const EditModal = () => {
                   ></label>
                   <span className="p-float-label">
                     <InputTextarea
+                      maxLength={256}
                       id={field.name}
                       value={field.value}
                       autoResize
@@ -209,6 +213,8 @@ const EditModal = () => {
                   <span className="p-float-label">
                     <InputNumber
                       id={field.name}
+                      max={365}
+                      min={1}
                       value={field.value}
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => field.onChange(e.value)}
