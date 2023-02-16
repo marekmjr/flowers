@@ -63,6 +63,8 @@ const EditModal = () => {
         description: "",
         howOftenToWaterInDays: 1,
         dateOfLastWatering: new Date(),
+        minTemperature: 0,
+        maxTemperature: 0,
       });
       reset();
     }
@@ -97,7 +99,6 @@ const EditModal = () => {
           defaultValues.id === "" ? "Creating new flower" : "Editing flower"
         }
         visible={modalOpen}
-        style={{ width: "30vw" }}
         onHide={() => setModalOpen(false)}
         footer={
           <>
@@ -200,70 +201,134 @@ const EditModal = () => {
                 </>
               )}
             />
-            <Controller
-              name="howOftenToWaterInDays"
-              rules={{
-                min: {
-                  value: 1,
-                  message: "Minimal value is one",
-                },
-                max: {
-                  value: 365,
-                  message: "This isn't a flower",
-                },
-              }}
-              control={control}
-              render={({ field, fieldState }) => (
-                <>
-                  <label
-                    htmlFor={field.name}
-                    className={classNames({
-                      "p-error": errors.howOftenToWaterInDays,
-                    })}
-                  ></label>
-                  <span className="p-float-label">
-                    <InputNumber
-                      id={field.name}
-                      max={365}
-                      min={1}
-                      value={field.value}
-                      className={classNames({ "p-invalid": fieldState.error })}
-                      onChange={(e) => field.onChange(e.value)}
-                    />
-                    <label htmlFor={field.name}>
-                      How often to water (in days)
-                    </label>
-                  </span>
-                  {getFormErrorMessage(field.name)}
-                </>
-              )}
-            />
-            <Controller
-              name="dateOfLastWatering"
-              rules={{}}
-              control={control}
-              render={({ field, fieldState }) => (
-                <>
-                  <label
-                    htmlFor={field.name}
-                    className={classNames({
-                      "p-error": errors.howOftenToWaterInDays,
-                    })}
-                  ></label>
-                  <span className="p-float-label">
-                    <Calendar
-                      maxDate={new Date()}
-                      id={field.name}
-                      value={field.value}
-                      className={classNames({ "p-invalid": fieldState.error })}
-                      onChange={(e) => field.onChange(e.value)}
-                    />
-                    <label htmlFor={field.name}>Last time watered</label>
-                  </span>
-                  {getFormErrorMessage(field.name)}
-                </>
-              )}
-            />
+            <div className="flex flex-row">
+              <Controller
+                name="howOftenToWaterInDays"
+                rules={{
+                  min: {
+                    value: 1,
+                    message: "Minimal value is one",
+                  },
+                  max: {
+                    value: 365,
+                    message: "This isn't a flower",
+                  },
+                }}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label
+                      htmlFor={field.name}
+                      className={classNames({
+                        "p-error": errors.howOftenToWaterInDays,
+                      })}
+                    ></label>
+                    <span className="p-float-label">
+                      <InputNumber
+                        id={field.name}
+                        max={365}
+                        min={1}
+                        value={field.value}
+                        className={classNames({
+                          "p-invalid": fieldState.error,
+                        })}
+                        onChange={(e) => field.onChange(e.value)}
+                      />
+                      <label htmlFor={field.name}>
+                        How often to water (in days)
+                      </label>
+                    </span>
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+              <Controller
+                name="dateOfLastWatering"
+                rules={{}}
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label
+                      htmlFor={field.name}
+                      className={classNames({
+                        "p-error": errors.howOftenToWaterInDays,
+                      })}
+                    ></label>
+                    <span className="p-float-label">
+                      <Calendar
+                        maxDate={new Date()}
+                        id={field.name}
+                        value={field.value}
+                        className={classNames({
+                          "p-invalid": fieldState.error,
+                        })}
+                        onChange={(e) => field.onChange(e.value)}
+                      />
+                      <label htmlFor={field.name}>Last time watered</label>
+                    </span>
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+            </div>
+            <div className="mt-8 flex flex-row">
+              <Controller
+                name="minTemperature"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label
+                      htmlFor={field.name}
+                      className={classNames({
+                        "p-error": errors.minTemperature,
+                      })}
+                    ></label>
+                    <span className="p-float-label">
+                      <InputNumber
+                        id={field.name}
+                        value={field.value}
+                        className={classNames({
+                          "p-invalid": fieldState.error,
+                        })}
+                        onChange={(e) => field.onChange(e.value)}
+                      />
+                      <label htmlFor={field.name}>
+                        Minimal temperature for flower (°C)
+                      </label>
+                    </span>
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+              <Controller
+                name="maxTemperature"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label
+                      htmlFor={field.name}
+                      className={classNames({
+                        "p-error": errors.maxTemperature,
+                      })}
+                    ></label>
+                    <span className="p-float-label">
+                      <InputNumber
+                        id={field.name}
+                        value={field.value}
+                        className={classNames({
+                          "p-invalid": fieldState.error,
+                        })}
+                        onChange={(e) => field.onChange(e.value)}
+                      />
+                      <label htmlFor={field.name}>
+                        Maximal temperature for flower (°C)
+                      </label>
+                    </span>
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
+              />
+            </div>
           </div>
         </form>
       </Dialog>

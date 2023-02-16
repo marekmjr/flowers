@@ -26,6 +26,8 @@ model Flower {
     coordinateY Float @default(0)
     howOftenToWaterInDays Int @default(2)
     dateOfLastWatering DateTime @default(now())
+    minTemperature Float @default(0)
+    maxTemperature Float @default(0)
 }
 
 model FlowerDatabase{

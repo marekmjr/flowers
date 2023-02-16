@@ -5,6 +5,7 @@ import { LineLayer, IconLayer, TextLayer } from "@deck.gl/layers";
 import { api } from "../utils/api";
 import moment from "moment";
 import type { Flower } from "@prisma/client";
+import { InputNumber } from "primereact/inputnumber";
 
 const Map: NextPage = () => {
   // Viewport settings
@@ -169,9 +170,14 @@ const Map: NextPage = () => {
     const health = getHeath(d.dateOfLastWatering, d.howOftenToWaterInDays);
     const rgbColor = healthColorRgbClass(health);
 
+    const strokeColor = d.minTemperature > temperature ? "#0000FF" : "#FF0000";
+    let strokeWidth = 0;
+    if (d.minTemperature > temperature || d.maxTemperature < temperature) {
+      strokeWidth = 3;
+    }
     return `
-      <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="12" r="10" fill="${rgbColor}" stroke="#00" stroke-width="2"/>
+      <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="15" r="10" fill="${rgbColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>
       </svg>
     `;
   };
@@ -265,7 +271,7 @@ const Map: NextPage = () => {
       onDragEnd: (d: any) => onDragEnd(d),
       onDrag: (d: any) => onDrag(d),
       pickable: true,
-      sizeScale: 30,
+      sizeScale: 46,
     }),
     new TextLayer({
       id: "text-layer",
@@ -280,8 +286,33 @@ const Map: NextPage = () => {
     }),
   ];
 
+  const [temperature, setTemperature] = useState(20);
+
+  const TemperatureIssue = (object: Flower) => {
+    if (object.minTemperature > temperature) {
+      return "Temperature is too low for me!!";
+    } else if (object.maxTemperature < temperature) {
+      return "Temperature is too high for me!!";
+    } else {
+      return "";
+    }
+  };
+
   return (
     <>
+      <div className="ml-16">
+        <label htmlFor="temperature" className="mb-2 block font-bold">
+          Temperature
+        </label>
+        <InputNumber
+          inputId="temperature"
+          value={temperature}
+          onValueChange={(e) => setTemperature(e.value || 0)}
+          suffix="℃"
+          min={0}
+          max={40}
+        />
+      </div>
       <div
         className="relative h-[80vh] w-full"
         onContextMenu={(e) => e.preventDefault()}
@@ -304,6 +335,11 @@ const Map: NextPage = () => {
                   object.dateOfLastWatering,
                   object.howOftenToWaterInDays
                 )}%</div>
+                <div>Min temperature:</div>
+                <div>${object.minTemperature}</div>
+                <div>Max temperature</div>
+                <div>${object.maxTemperature}</div>
+                ${TemperatureIssue(object)}
               </div>
               `,
               style: {

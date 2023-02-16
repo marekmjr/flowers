@@ -46,6 +46,8 @@ const Flowers = () => {
       description: flower.description,
       howOftenToWaterInDays: flower.howOftenToWaterInDays,
       dateOfLastWatering: flower.dateOfLastWatering,
+      maxTemperature: flower.maxTemperature,
+      minTemperature: flower.minTemperature,
     });
     setEditModalOpen(true);
   };

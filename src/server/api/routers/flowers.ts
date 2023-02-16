@@ -12,7 +12,9 @@ export const flowersRouter = createTRPCRouter({
       name: z.string(),
       description: z.string(),
       howOftenToWaterInDays: z.number(),
-      dateOfLastWatering: z.date()
+      dateOfLastWatering: z.date(),
+      minTemperature: z.number(),
+      maxTemperature: z.number()
     }))
     .mutation(async ({ input, ctx }) => {
       return ctx.prisma.flower.create({data: input})
@@ -23,7 +25,9 @@ export const flowersRouter = createTRPCRouter({
       name: z.string(),
       description: z.string(),
       howOftenToWaterInDays: z.number(),
-      dateOfLastWatering: z.date()
+      dateOfLastWatering: z.date(),
+      minTemperature: z.number(),
+      maxTemperature: z.number()
     }))  
     .mutation(async ({input,ctx }) => {
       return ctx.prisma.flower.update({ 
@@ -34,7 +38,9 @@ export const flowersRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           howOftenToWaterInDays: input.howOftenToWaterInDays,
-          dateOfLastWatering: input.dateOfLastWatering
+          dateOfLastWatering: input.dateOfLastWatering,
+          minTemperature: input.minTemperature,
+          maxTemperature: input.maxTemperature
         }
       })
     }),

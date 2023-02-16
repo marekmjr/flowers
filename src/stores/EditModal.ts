@@ -8,5 +8,7 @@ export const editModalValuesAtom = atom({
   description: "",
   howOftenToWaterInDays: 0,
   dateOfLastWatering: new Date(),
+  maxTemperature: 0,
+  minTemperature: 0
 })
 
