@@ -50,6 +50,7 @@ const EditModal = () => {
     formState: { errors },
     handleSubmit,
     reset,
+    setValue,
   } = useForm({ defaultValues });
 
   //Updates on defaultValues change
@@ -90,6 +91,12 @@ const EditModal = () => {
     ) : (
       <small className="p-error -mt-3">&nbsp;</small>
     );
+  };
+
+  const setFromInfo = (e: any) => {
+    setValue("minTemperature", e.tempmin);
+    setValue("maxTemperature", e.tempmax);
+    setValue("description", e.watering);
   };
 
   return (
@@ -156,6 +163,7 @@ const EditModal = () => {
                       className={classNames({ "p-invalid": fieldState.error })}
                       onChange={(e) => {
                         if (e.target.value instanceof Object) {
+                          setFromInfo(e.target.value);
                           field.onChange(e.target.value.latin);
                         } else {
                           field.onChange(e.target.value);
