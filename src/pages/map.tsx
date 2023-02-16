@@ -307,10 +307,14 @@ const Map: NextPage = () => {
         <InputNumber
           inputId="temperature"
           value={temperature}
-          onValueChange={(e) => setTemperature(e.value || 0)}
+          onValueChange={(e) => {
+            // iconLayer doesn't rerender
+            setTemperature(e.value || 0);
+            const tmp = flowersData;
+            setFlowersData([]);
+            setTimeout(() => setFlowersData(tmp), 20);
+          }}
           suffix="℃"
-          min={0}
-          max={40}
         />
       </div>
       <div
