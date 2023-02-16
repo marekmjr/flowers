@@ -6,6 +6,7 @@ import { api } from "../utils/api";
 import moment from "moment";
 import type { Flower } from "@prisma/client";
 import { InputNumber } from "primereact/inputnumber";
+import axios from "axios";
 
 const Map: NextPage = () => {
   // Viewport settings
@@ -298,6 +299,27 @@ const Map: NextPage = () => {
     }
   };
 
+  const [lat, setLat] = useState(0);
+  const [long, setLong] = useState(0);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setLat(position.coords.latitude);
+      setLong(position.coords.longitude);
+    });
+    const getWeather = async () => {
+      const data = axios.get(
+        `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/weather/?lat=${lat}&lon=${long}&units=metric&APPID=${process.env.NEXT_PUBLIC_REACT_APP_API_KEY}`
+      );
+      return data;
+    };
+    if (lat != 0 && long != 0) {
+      getWeather()
+        .then((response) => setTemperature(response.data.main.temp))
+        .catch(console.error);
+    }
+  }, [lat, long]);
+
   return (
     <>
       <div className="ml-16">
@@ -332,8 +354,6 @@ const Map: NextPage = () => {
               <div class="grid grid-cols-2 gap-x-2">
                 <div>Name:</div>
                 <div>${object.name} </div>
-                <div>Desciption:</div>
-                <div>${object.description} </div>
                 <div>Health:</div>
                 <div>${getHeath(
                   object.dateOfLastWatering,
