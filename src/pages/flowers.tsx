@@ -8,7 +8,7 @@ const Flowers: NextPage = () => {
 
   return (
     <>
-      <div className="h-[100vh] bg-gradient-to-r p-16">
+      <div className="bg-gradient-to-r p-16">
         <FlowerTable />
         <EditModal />
       </div>

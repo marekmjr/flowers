@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { api } from "../utils/api";
 import { Button } from "primereact/button";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import { modalOpenAtom, editModalValuesAtom } from "../stores/EditModal";
 
@@ -12,6 +13,8 @@ import { Flower } from "@prisma/client";
 import Image from "next/image";
 
 import { HealthBar } from "./healthbar/HealthBar";
+import { Toast } from "primereact/toast";
+import { useRef } from "react";
 
 const Flowers = () => {
   const flowersDataQuery = api.flowers.getAll.useQuery();
@@ -37,6 +40,11 @@ const Flowers = () => {
 
   const deleteFlower = (idToDelete: string) => {
     flowersDeleteQuery.mutate({ id: idToDelete });
+    toast.current?.show({
+      severity: "success",
+      summary: "Deleted",
+      detail: "Flower was deleted",
+    });
   };
 
   const editFlower = (flower: Flower) => {
@@ -58,8 +66,20 @@ const Flowers = () => {
     return Math.max(howOftenToWaterInDays - timeSince, 0);
   };
 
+  const confirmDelete = (id: string) => {
+    confirmDialog({
+      message: "Are you sure you want to proceed?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => deleteFlower(id),
+    });
+  };
+  const toast = useRef<Toast>(null);
+
   return (
     <>
+      <Toast ref={toast} />
+      <ConfirmDialog />
       <Card title="Flowers">
         <div className="mb-2 flex flex-row justify-end">
           <Button label="Add" onClick={() => setEditModalOpen(true)} />
@@ -148,7 +168,7 @@ const Flowers = () => {
                   height="40"
                   loop
                   className="cursor-pointer"
-                  onClick={() => deleteFlower(rowdata.id)}
+                  onClick={() => confirmDelete(rowdata.id)}
                   onMouseOver={(event) =>
                     (event.target as HTMLVideoElement).play()
                   }

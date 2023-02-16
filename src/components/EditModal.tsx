@@ -34,10 +34,13 @@ const EditModal = () => {
   const { data: flowersInfoData } = api.flowersInfo.getAll.useQuery();
 
   const toast = useRef<Toast>(null);
-  const show = () => {
+  const show = (created: boolean) => {
     toast.current?.show({
       severity: "success",
-      summary: "Form Submitted",
+      summary: created ? "Created" : "Updated",
+      detail: created
+        ? "Flower was succesfully created"
+        : "Flower was successfully updated",
     });
   };
 
@@ -72,12 +75,12 @@ const EditModal = () => {
   }, [modalOpen, reset, setDefaultValues]);
 
   const onSubmit = async (data: any) => {
-    show();
     if (data.id === "") {
       await flowerCreate.mutate(data);
     } else {
       await flowersUpdate.mutate(data);
     }
+    show(data.id === "");
     setModalOpen(false);
     reset();
   };
@@ -128,7 +131,6 @@ const EditModal = () => {
           </>
         }
       >
-        <button onClick={() => show()}>Tester</button>
         <form
           id="flowerForm"
           onSubmit={handleSubmit(onSubmit)}
