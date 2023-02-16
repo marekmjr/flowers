@@ -66,9 +66,9 @@ const Flowers = () => {
     return Math.max(howOftenToWaterInDays - timeSince, 0);
   };
 
-  const confirmDelete = (id: string) => {
+  const confirmDelete = (id: string, name: string) => {
     confirmDialog({
-      message: "Are you sure you want to proceed?",
+      message: `Are you sure you want to delete ${name}?`,
       header: "Confirmation",
       icon: "pi pi-exclamation-triangle",
       accept: () => deleteFlower(id),
@@ -168,7 +168,7 @@ const Flowers = () => {
                   height="40"
                   loop
                   className="cursor-pointer"
-                  onClick={() => confirmDelete(rowdata.id)}
+                  onClick={() => confirmDelete(rowdata.id, rowdata.name)}
                   onMouseOver={(event) =>
                     (event.target as HTMLVideoElement).play()
                   }
