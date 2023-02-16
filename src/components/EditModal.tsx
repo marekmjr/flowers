@@ -94,6 +94,7 @@ const EditModal = () => {
 
   return (
     <>
+      <Toast ref={toast} />
       <Dialog
         header={
           defaultValues.id === "" ? "Creating new flower" : "Editing flower"
@@ -120,7 +121,7 @@ const EditModal = () => {
           </>
         }
       >
-        <Toast ref={toast} />
+        <button onClick={() => show()}>Tester</button>
         <form
           id="flowerForm"
           onSubmit={handleSubmit(onSubmit)}
