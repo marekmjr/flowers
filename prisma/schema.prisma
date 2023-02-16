@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "sqlite"
     url      = env("DATABASE_URL")
 }
 
@@ -26,4 +26,19 @@ model Flower {
     coordinateY Float @default(0)
     howOftenToWaterInDays Int @default(2)
     dateOfLastWatering DateTime @default(now())
+}
+
+model FlowerDatabase{
+    id  Int @unique
+    latin String
+    family String
+    common String
+    category String
+    origin String
+    climate String
+    tempmax Float
+    tempmin Float
+    ideallight String
+    toleratedlight String
+    watering String
 }

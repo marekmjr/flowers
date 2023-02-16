@@ -6,6 +6,7 @@ import { Toast } from "primereact/toast";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Calendar } from "primereact/calendar";
 import { editModalValuesAtom, modalOpenAtom } from "../stores/EditModal";
+import { Dropdown } from "primereact/dropdown";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -29,6 +30,8 @@ const EditModal = () => {
       flowersDataQuery.refetch();
     },
   });
+
+  const { data: flowersInfoData } = api.flowersInfo.getAll.useQuery();
 
   const toast = useRef<Toast>(null);
   const show = () => {
@@ -90,13 +93,11 @@ const EditModal = () => {
   return (
     <>
       <Dialog
-        position="right"
-        draggable={false}
-        resizable={false}
         header={
           defaultValues.id === "" ? "Creating new flower" : "Editing flower"
         }
         visible={modalOpen}
+        style={{ width: "30vw" }}
         onHide={() => setModalOpen(false)}
         footer={
           <>
@@ -142,12 +143,22 @@ const EditModal = () => {
                     className={classNames({ "p-error": errors.name })}
                   ></label>
                   <span className="p-float-label">
-                    <InputText
+                    <Dropdown
+                      editable
+                      filter
+                      optionLabel="latin"
+                      options={flowersInfoData}
                       id={field.name}
                       maxLength={32}
                       value={field.value}
                       className={classNames({ "p-invalid": fieldState.error })}
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={(e) => {
+                        if (e.target.value instanceof Object) {
+                          field.onChange(e.target.value.latin);
+                        } else {
+                          field.onChange(e.target.value);
+                        }
+                      }}
                     />
                     <label htmlFor={field.name}>Name</label>
                   </span>
